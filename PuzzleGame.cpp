@@ -5,6 +5,8 @@
 #pragma comment (lib, "Bangtal.lib")
 using namespace std;
 
+
+//easy mode 인 3X3 게임은 4X4 방식과 동일한 함수로 작성하고 namespace로 분리했다
 namespace easy {
     SceneID scene1;
     ObjectID startButton;
@@ -261,6 +263,8 @@ namespace easy {
     }
 }
 
+
+//4X4 퍼즐 게임 관련
 SceneID scene1;
 ObjectID startButton;
 ObjectID piece[16];
