@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
-#pragma comment (lib, "Bangtal.lib")
+
 using namespace std;
 
 
