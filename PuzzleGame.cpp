@@ -34,11 +34,8 @@ namespace easy {
 
     // 0 ~ n-1 중 random한 숫자 생성
     int myRand(int n) {
-        if (n == 0) {
-            return 0;
-        }
-        int k = rand() % n;
         if (n > 0) {
+            int k = rand() % n;
             return k;
         }
         return 0;
@@ -154,7 +151,7 @@ namespace easy {
 
     void shuffle() {
 
-        hNum = myRand(16);    //여기!!!!!!!!!!!!!!!!!!!!!!!!
+        hNum = myRand(9);    //여기!!!!!!!!!!!!!!!!!!!!!!!!
         hX = arrayX(hNum);
         hY = arrayY(hNum);
         hideObject(piece[hNum]);
@@ -291,8 +288,9 @@ bool finish = false;
 
 
 int myRand(int n) {
-    int k = rand() % n;
+
     if (n > 0) {
+        int k = rand() % n;
         return k;
     }
     return 0;
