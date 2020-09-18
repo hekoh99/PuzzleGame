@@ -268,6 +268,7 @@ namespace easy {
 SceneID scene1;
 ObjectID startButton;
 ObjectID piece[16];
+ObjectID restartButton;
 ObjectID menu1,menu2, start;
 TimerID timer1;
 
@@ -470,6 +471,16 @@ void mouseCallback(ObjectID object, int x, int y, MouseAction) {
         startTimer(timer1);
 
     }
+
+    else if (object == restartButton) {
+        hideObject(restartButton);
+
+        hideTimer();
+
+        showObject(menu1);
+        showObject(menu2);
+        startGame(start);
+    }
     
     else if (object == easy::startButton) {
         hideObject(easy::startButton);
@@ -519,8 +530,10 @@ void mouseCallback(ObjectID object, int x, int y, MouseAction) {
                 easy::finish = easy::checkFin();
                 if (easy::finish) {
                     easy::playing = false;
-                    setObjectImage(easy::startButton, "Images\\2\\restart.png");
                     showObject(easy::startButton);
+                    restartButton = createObject("Images\\2\\restart.png");
+                    locateObject(restartButton, easy::scene1, 590, 80);
+                    showObject(restartButton);
                     showObject(easy::piece[easy::hNum]);
                     stopTimer(easy::timer1);
                     float time = 3600 - getTimer(easy::timer1);
@@ -563,8 +576,10 @@ void mouseCallback(ObjectID object, int x, int y, MouseAction) {
                 finish = checkFin();
                 if (finish) {
                     playing = false;
-                    setObjectImage(startButton, "Images\\2\\restart.png");
                     showObject(startButton);
+                    restartButton = createObject("Images\\2\\restart.png");
+                    locateObject(restartButton, scene1, 590, 80);
+                    showObject(restartButton);
                     showObject(piece[hNum]);
                     stopTimer(timer1);
                     float time = 3600 - getTimer(timer1);
