@@ -4,24 +4,27 @@
 #include <ctime>
 
 using namespace std;
+float easyhighscore = 3600;
+float hardhighscore = 3600;
 
+// 이미지 파일의 위치
+const char* easyimgFileLocate[9] = { "images\\1\\1-1.png", "images\\1\\1-2.png", "images\\1\\1-3.png", "images\\1\\1-4.png", "images\\1\\1-5.png", "images\\1\\1-6.png",
+        "images\\1\\1-7.png", "images\\1\\1-8.png" , "images\\1\\1-9.png" };
 
 //easy mode 인 3X3 게임은 4X4 방식과 동일한 함수로 작성하고 namespace로 분리했다
+
+SceneID easyscene;
+
 namespace easy {
-    SceneID scene1;
     ObjectID startButton;
     ObjectID piece[9];
-    ObjectID menu2, start;
+    ObjectID start;
     TimerID timer1;
 
     int arr[3][3];
     // currentX[i] : 현재 i번쨰 조각의 X좌표
     int currentX[9], currentY[9];
     int dx[4] = { 1, 0, -1, 0 }, dy[4] = { 0, 1, 0, -1 };
-
-    // 이미지 파일의 위치
-    const char* imgFileLocate[9] = { "images\\1\\1-1.png", "images\\1\\1-2.png", "images\\1\\1-3.png", "images\\1\\1-4.png", "images\\1\\1-5.png", "images\\1\\1-6.png",
-            "images\\1\\1-7.png", "images\\1\\1-8.png" , "images\\1\\1-9.png" };
 
     // hideX,Y,Num.  hide된 piece의 X,Y좌표와 몇번째?
     int hX = 0, hY = 0, hNum = 0;
@@ -99,7 +102,7 @@ namespace easy {
             for (int j = 0; j < 3; j++) {
                 arr[j][i] = num;
                 if (initObject) {
-                    locateObject(piece[num], scene1, coolX(num), coolY(num));
+                    locateObject(piece[num], easyscene, coolX(num), coolY(num));
                 }
                 num++;
             }
@@ -190,8 +193,8 @@ namespace easy {
                 currentX[sNum] = tx, currentY[sNum] = ty;
                 arr[tx][ty] = sNum;
 
-                locateObject(piece[hNum], scene1, coolX(sx, 0), coolY(0, sy));
-                locateObject(piece[sNum], scene1, coolX(tx, 0), coolY(0, ty));
+                locateObject(piece[hNum], easyscene, coolX(sx, 0), coolY(0, sy));
+                locateObject(piece[sNum], easyscene, coolX(tx, 0), coolY(0, ty));
 
                 updateCorrect(sx, sy);
                 updateCorrect(tx, ty);
@@ -200,67 +203,7 @@ namespace easy {
         }
     }
 
-    void mouseCallback(ObjectID object, int x, int y, MouseAction) {
-        if (object == startButton) {
-            hideObject(startButton);
-            shuffle();
-            finish = false;
-            playing = true;
-
-            hideTimer();
-            setTimer(timer1, 3600.0f);
-            startTimer(timer1);
-
-        }
-
-        else if (object == menu2) {
-            startGame(scene1);
-        }
-        else if (playing) {
-            // num : 클릭한 조각 번호
-            int num = findNum(object);
-
-            if (num >= 0) {
-                int cx = currentX[num], cy = currentY[num];
-                int direction = checkHPieceDirection(cx, cy);
-
-                if (direction > -1) {
-
-                    int tx = hX, ty = hY;
-
-                    //hPiece 옮기기
-                    hX = cx, hY = cy;
-                    currentX[hNum] = cx, currentY[hNum] = cy;
-                    arr[cx][cy] = hNum;
-
-                    //클릭한 piece 옮기기
-                    currentX[num] = tx, currentY[num] = ty;
-                    arr[tx][ty] = num;
-
-                    //이미지 갱신
-                    locateObject(piece[hNum], scene1, coolX(cx, 0), coolY(0, cy));
-                    locateObject(piece[num], scene1, coolX(tx, 0), coolY(0, ty));
-
-                    updateCorrect(cx, cy);
-                    updateCorrect(tx, ty);
-
-                    finish = checkFin();
-                    if (finish) {
-                        playing = false;
-                        setObjectImage(startButton, "Images\\2\\restart.png");
-                        showObject(startButton);
-                        showObject(piece[hNum]);
-                        stopTimer(timer1);
-                        float time = 3600 - getTimer(timer1);
-                        setTimer(timer1, time);
-                        showTimer(timer1);
-
-                    }
-                }
-            }
-
-        }
-    }
+    
 }
 
 
@@ -278,7 +221,7 @@ int arr[4][4];
 int currentX[16], currentY[16];
 int dx[4] = { 1, 0, -1, 0 }, dy[4] = { 0, 1, 0, -1 };
 
-const char* imgFileLocate[16] = { "images\\2\\in1.jpg", "images\\2\\in2.jpg", "images\\2\\in3.jpg", "images\\2\\in4.jpg", "images\\2\\in5.jpg", "images\\2\\in6.jpg",
+const char* hardimgFileLocate[16] = { "images\\2\\in1.jpg", "images\\2\\in2.jpg", "images\\2\\in3.jpg", "images\\2\\in4.jpg", "images\\2\\in5.jpg", "images\\2\\in6.jpg",
         "images\\2\\in7.jpg", "images\\2\\in8.jpg" , "images\\2\\in9.jpg" , "images\\2\\in10.jpg" , "images\\2\\in11.jpg" , "images\\2\\in12.jpg",
         "images\\2\\in13.jpg" , "images\\2\\in14.jpg" , "images\\2\\in15.jpg", "images\\2\\in16.jpg" };
 
@@ -498,7 +441,7 @@ void mouseCallback(ObjectID object, int x, int y, MouseAction) {
     }
 
     else if (object == menu2) {
-        startGame(easy::scene1);
+        startGame(easyscene);
     }
 
     else if (easy::playing) {
@@ -521,8 +464,8 @@ void mouseCallback(ObjectID object, int x, int y, MouseAction) {
                 easy::currentX[num] = tx, easy::currentY[num] = ty;
                 easy::arr[tx][ty] = num;
 
-                locateObject(easy::piece[easy::hNum], easy::scene1, easy::coolX(cx, 0), easy::coolY(0, cy));
-                locateObject(easy::piece[num], easy::scene1, easy::coolX(tx, 0), easy::coolY(0, ty));
+                locateObject(easy::piece[easy::hNum], easyscene, easy::coolX(cx, 0), easy::coolY(0, cy));
+                locateObject(easy::piece[num], easyscene, easy::coolX(tx, 0), easy::coolY(0, ty));
 
                 easy::updateCorrect(cx, cy);
                 easy::updateCorrect(tx, ty);
@@ -532,14 +475,17 @@ void mouseCallback(ObjectID object, int x, int y, MouseAction) {
                     easy::playing = false;
                     showObject(easy::startButton);
                     restartButton = createObject("Images\\2\\restart.png");
-                    locateObject(restartButton, easy::scene1, 590, 80);
+                    locateObject(restartButton, easyscene, 590, 80);
                     showObject(restartButton);
                     showObject(easy::piece[easy::hNum]);
                     stopTimer(easy::timer1);
                     float time = 3600 - getTimer(easy::timer1);
                     setTimer(easy::timer1, time);
                     showTimer(easy::timer1);
-
+                    if (easyhighscore > time) {
+                        easyhighscore = time;
+                        showMessage("최고 기록 갱신!!");
+                    }
                 }
             }
         }
@@ -585,7 +531,10 @@ void mouseCallback(ObjectID object, int x, int y, MouseAction) {
                     float time = 3600 - getTimer(timer1);
                     setTimer(timer1, time);
                     showTimer(timer1);
-
+                    if (hardhighscore > time) {
+                        hardhighscore = time;
+                        showMessage("최고 기록 갱신!!");
+                    }
                 }
             }
         }
@@ -604,7 +553,7 @@ int main()
     setGameOption(GameOption::GAME_OPTION_ROOM_TITLE, false);
 
     scene1 = createScene("퍼즐", "Images\\2\\배경.jpg");
-    easy::scene1 = createScene("퍼즐", "Images\\1\\배경1.png");
+    easyscene = createScene("퍼즐", "Images\\1\\배경1.png");
     start = createScene("퍼즐", "Images\\바탕.png");
     menu1 = createObject("Images\\메뉴1.png");
     locateObject(menu1, start, 800, 300);
@@ -616,7 +565,7 @@ int main()
 
     // 조각 생성
     for (int i = 0; i < 16; i++) {
-        piece[i] = createObject(imgFileLocate[i]);
+        piece[i] = createObject(hardimgFileLocate[i]);
         locateObject(piece[i], scene1, coolX(i), coolY(i));
         showObject(piece[i]);
     }
@@ -632,13 +581,13 @@ int main()
     timer1 = createTimer(3600.0f);
 
     for (int j = 0; j < 9; j++) {
-        easy::piece[j] = createObject(easy::imgFileLocate[j]);
-        locateObject(easy::piece[j], easy::scene1, easy::coolX(j), easy::coolY(j));
+        easy::piece[j] = createObject(easyimgFileLocate[j]);
+        locateObject(easy::piece[j], easyscene, easy::coolX(j), easy::coolY(j));
         showObject(easy::piece[j]);
     }
 
     easy::startButton = createObject("Images\\2\\start.png");
-    locateObject(easy::startButton, easy::scene1, 590, 80);
+    locateObject(easy::startButton, easyscene, 590, 80);
     showObject(easy::startButton);
 
     easy::initializeArr(false);
@@ -646,7 +595,6 @@ int main()
     easy::initializeCorrect();
 
     easy::timer1 = createTimer(3600.0f);
-
 
     startGame(start);
 
