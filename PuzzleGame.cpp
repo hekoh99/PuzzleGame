@@ -40,7 +40,6 @@ bool correct[16];
 bool playing = false;
 bool finish = false;
 
-
 int arrayX(int num) {
     return num % ver;
 }
@@ -111,13 +110,18 @@ int findNum(ObjectID object) {
     return -1; // piece가 아닌 object가 들어오면
 }
 
+// currentX,Y 초기화
+void initializeCurrentXY() {
+    for (int i = 0; i < ver; i++) {
+        currentX[i] = arrayX(i);
+        currentY[i] = arrayY(i);
+    }
+}
+
 namespace easy {
     ObjectID startButton;
     ObjectID start;
     TimerID timer1;
-
-    // currentX[i] : 현재 i번쨰 조각의 X좌표
-    int currentX[9], currentY[9];
 
     // 맞는 조각
     bool correct[9];
@@ -138,13 +142,7 @@ namespace easy {
             }
         }
     }
-    // currentX,Y 초기화
-    void initializeCurrentXY() {
-        for (int i = 0; i < 9; i++) {
-            currentX[i] = arrayX(i);
-            currentY[i] = arrayY(i);
-        }
-    }
+
     // correct 초기화
     void initializeCorrect() {
         for (int i = 0; i < 9; i++) {
@@ -232,13 +230,6 @@ void initializeArr(bool initObject) {
             }
             num++;
         }
-    }
-}
-
-void initializeCurrentXY() {
-    for (int i = 0; i < 16; i++) {
-        currentX[i] = arrayX(i);
-        currentY[i] = arrayY(i);
     }
 }
 
@@ -394,7 +385,7 @@ void mouseCallback(ObjectID object, int x, int y, MouseAction) {
         showObject(easy::startButton);
 
         easy::initializeArr(false);
-        easy::initializeCurrentXY();
+        initializeCurrentXY();
         easy::initializeCorrect();
 
         easy::timer1 = createTimer(3600.0f);
@@ -407,7 +398,7 @@ void mouseCallback(ObjectID object, int x, int y, MouseAction) {
         int num = findNum(object);
 
         if (num >= 0) {
-            int cx = easy::currentX[num], cy = easy::currentY[num];
+            int cx = currentX[num], cy = currentY[num];
             int direction = checkHPieceDirection(cx, cy);
 
             if (direction > -1) {
@@ -416,10 +407,10 @@ void mouseCallback(ObjectID object, int x, int y, MouseAction) {
 
 
                 hX = cx, hY = cy;
-                easy::currentX[hNum] = cx, easy::currentY[hNum] = cy;
+                currentX[hNum] = cx, currentY[hNum] = cy;
                 easyArr[cx][cy] = hNum;
 
-                easy::currentX[num] = tx, easy::currentY[num] = ty;
+                currentX[num] = tx, currentY[num] = ty;
                 easyArr[tx][ty] = num;
 
                 locateObject(pieces[hNum], easyscene, coolX(cx, 0), coolY(0, cy));
@@ -522,5 +513,4 @@ int main()
     showObject(menu2);
 
     startGame(start);
-
 }
